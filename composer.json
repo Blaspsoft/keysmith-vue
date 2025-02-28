@@ -1,0 +1,55 @@
+{
+  "name": "modla/keysmith-vue",
+  "description": "A Vue & Inertia-powered API key management system for Laravel, with secure token generation, revocation, and authentication. ",
+  "keywords": [
+    "modla",
+    "keysmith-vue"
+  ],
+  "homepage": "https://github.com/modla/keysmith-vue",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Michael Deeming",
+      "email": "mike.deeming@blaspsoft.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "inertiajs/inertia-laravel": "^2.0",
+    "laravel/sanctum": "^4.0",
+    "illuminate/support": "^12.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^12.0",
+    "phpunit/phpunit": "^10.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Modla\\KeysmithVue\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Modla\\KeysmithVue\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modla\\KeysmithVue\\KeysmithVueServiceProvider"
+      ],
+      "aliases": {
+        "KeysmithVue": "Modla\\KeysmithVue\\KeysmithVueFacade"
+      }
+    }
+  }
+}
