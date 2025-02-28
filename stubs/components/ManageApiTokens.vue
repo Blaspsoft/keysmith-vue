@@ -7,54 +7,84 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 
-const props = defineProps<{
-  tokens: Array;
-  availablePermissions: Array;
-  defaultPermissions: Array;
+interface Token {
+  id: number;
+  tokenable_type: string;
+  tokenable_id: number;
+  name: string;
+  abilities: string[];
+  last_used_at: string;
+}
+
+defineProps<{
+  tokens: Token[];
+  availablePermissions: string[];
+  defaultPermissions: string[];
 }>();
 
-const managingPermissionsFor = ref(null);
+const isTokenBeingEdited = ref(false);
 
-const apiTokenBeingDeleted = ref(null);
+const apiTokenBeingEdited = ref<Token | null>(null);
+
+const isTokenBeingDeleted = ref(false);
+
+const apiTokenBeingDeleted = ref<Token | null>(null);
 
 const deleteApiTokenForm = useForm({});
 
 const updateApiTokenForm = useForm({
-  permissions: [],
+  permissions: [] as string[],
 });
 
-const manageApiTokenPermissions = (token) => {
-  console.log(token);
+const editApiToken = (token: Token) => {
+  isTokenBeingEdited.value = true;
   updateApiTokenForm.permissions = token.abilities;
-  managingPermissionsFor.value = token;
+  apiTokenBeingEdited.value = token;
 };
 
 const updateApiToken = () => {
+  if (!apiTokenBeingEdited.value) return;
   updateApiTokenForm.put(
-    route("api-tokens.update", managingPermissionsFor.value),
+    route("api-tokens.update", { token: apiTokenBeingEdited.value }),
     {
       preserveScroll: true,
       preserveState: true,
-      onSuccess: () => (managingPermissionsFor.value = null),
+      onSuccess: () => (
+        (apiTokenBeingEdited.value = null), (isTokenBeingEdited.value = false)
+      ),
     }
   );
 };
 
-const confirmApiTokenDeletion = (token) => {
+const confirmApiTokenDeletion = (token: Token) => {
+  isTokenBeingDeleted.value = true;
   apiTokenBeingDeleted.value = token;
 };
 
 const deleteApiToken = () => {
+  if (!apiTokenBeingDeleted.value) return;
   deleteApiTokenForm.delete(
-    route("api-tokens.destroy", apiTokenBeingDeleted.value),
+    route("api-tokens.destroy", { token: apiTokenBeingDeleted.value }),
     {
       preserveScroll: true,
       preserveState: true,
-      onSuccess: () => (apiTokenBeingDeleted.value = null),
+      onSuccess: () => (
+        (apiTokenBeingDeleted.value = null), (isTokenBeingDeleted.value = false)
+      ),
     }
   );
 };
@@ -70,7 +100,7 @@ const deleteApiToken = () => {
         >You may delete any of your existing tokens if they are no longer
         needed.</CardDescription
       >
-      <div class="mt-6 space-y-6">
+      <div class="mt-6 space-y-6 w-full lg:w-1/2">
         <div
           v-for="token in tokens"
           :key="token.id"
@@ -79,19 +109,21 @@ const deleteApiToken = () => {
           <div class="break-all">
             {{ token.name }}
           </div>
-
-          <div class="flex gap-2 items-center ms-2">
-            <div v-if="token.last_used_ago" class="text-sm text-gray-400">
-              Last used {{ token.last_used_ago }}
-            </div>
-
+          <div class="text-sm text-gray-400">
+            Last used |
+            {{
+              token.last_used_at
+                ? new Date(token.last_used_at).toLocaleString()
+                : "Never"
+            }}
+          </div>
+          <div class="flex gap-4 items-center ms-2">
             <Button
               v-if="availablePermissions.length > 0"
-              @click="manageApiTokenPermissions(token)"
+              @click="editApiToken(token)"
             >
-              Permissions
+              Edit
             </Button>
-
             <Button
               variant="destructive"
               @click="confirmApiTokenDeletion(token)"
@@ -103,52 +135,87 @@ const deleteApiToken = () => {
     </CardContent>
   </Card>
 
-  <!-- API Token Permissions Modal -->
-  <!---<Modal :show="managingPermissionsFor != null" @close="managingPermissionsFor = null">
-            <div class="p-6">
-                <div class="text-lg font-medium text-gray-900">API Token Permissions</div>
+  <Dialog v-model:open="isTokenBeingEdited">
+    <DialogContent class="max-w-xl">
+      <DialogHeader class="space-y-3">
+        <DialogTitle>API Token Permissions</DialogTitle>
+        <DialogDescription
+          >Manage the permissions for this API token.</DialogDescription
+        >
+      </DialogHeader>
+      <div class="mt-4 text-sm">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div v-for="permission in availablePermissions" :key="permission">
+            <Label class="flex items-center">
+              <Checkbox
+                :id="permission"
+                :checked="updateApiTokenForm.permissions.includes(permission)"
+                @update:checked="
+                  (checked) => {
+                    if (checked) {
+                      updateApiTokenForm.permissions.push(permission);
+                    } else {
+                      updateApiTokenForm.permissions =
+                        updateApiTokenForm.permissions.filter(
+                          (p) => p !== permission
+                        );
+                    }
+                  }
+                "
+                :tabindex="4"
+              />
+              <span class="text-sm ms-2">{{ permission }}</span>
+            </Label>
+          </div>
+        </div>
+      </div>
+      <DialogFooter>
+        <DialogClose as-child>
+          <Button variant="secondary" @click="isTokenBeingEdited = false">
+            Close
+          </Button>
+        </DialogClose>
+        <form @submit.prevent="updateApiToken">
+          <Button
+            type="submit"
+            class="ms-3"
+            :disabled="updateApiTokenForm.processing"
+            @click="updateApiToken"
+          >
+            Save
+          </Button>
+        </form>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 
-                <div class="mt-4 text-sm text-gray-600">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div v-for="permission in availablePermissions" :key="permission">
-                            <label class="flex items-center">
-                                <Checkbox v-model:checked="updateApiTokenForm.permissions" :value="permission" />
-                                <span class="text-sm text-gray-600 ms-2">{{ permission }}</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-end mt-6">
-                    <Button variant="secondary" @click="managingPermissionsFor = null"> Cancel </Button>
-
-                    <Button
-                        class="ms-3"
-                        :class="{ 'opacity-25': updateApiTokenForm.processing }"
-                        :disabled="updateApiTokenForm.processing"
-                        @click="updateApiToken"
-                    >
-                        Save
-                    </PrimaryButton>
-                </div>
-            </div>
-        </Modal>-->
-
-  <!-- Delete Token Confirmation Modal -->
-  <!--<Modal :show="apiTokenBeingDeleted != null" @close="apiTokenBeingDeleted = null">
-            <div class="p-6">
-                <div class="text-lg font-medium text-gray-900">Delete API Token</div>
-
-                <div class="mt-4 text-sm text-gray-600">Are you sure you would like to delete this API token?</div>
-
-                <div class="flex justify-end mt-6">
-                    <Button variant="secondary" @click="apiTokenBeingDeleted = null"> Cancel </Button>
-
-                    <Button variant="destructive" class="ms-3" :disabled="deleteApiTokenForm.processing" @click="deleteApiToken">
-                    >
-                        Delete
-                    </DangerButton>
-                </div>
-            </div>
-        </Modal>-->
+  <Dialog v-model:open="isTokenBeingDeleted">
+    <DialogContent class="max-w-xl">
+      <DialogHeader class="space-y-3">
+        <DialogTitle>Delete API Token</DialogTitle>
+        <DialogDescription
+          >Are you sure you would like to delete this API
+          token?</DialogDescription
+        >
+      </DialogHeader>
+      <DialogFooter>
+        <DialogClose as-child>
+          <Button variant="secondary" @click="apiTokenBeingDeleted = null"
+            >Close</Button
+          >
+        </DialogClose>
+        <form @submit.prevent="deleteApiToken">
+          <Button
+            variant="destructive"
+            type="submit"
+            class="ms-3"
+            :disabled="deleteApiTokenForm.processing"
+            @click="deleteApiToken"
+          >
+            Delete
+          </Button>
+        </form>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>

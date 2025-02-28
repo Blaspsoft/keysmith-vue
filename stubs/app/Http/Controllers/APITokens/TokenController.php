@@ -34,7 +34,7 @@ class TokenController extends Controller
     {
         $token = $request->user()->createToken($request->name, $request->permissions);
 
-        $request->session()->flash('keysmith.token', $token->plainTextToken);
+        $request->session()->flash('api_token', $token->plainTextToken);
 
         return redirect()->route('api-tokens.index');
     }

@@ -1,10 +1,10 @@
-# Very short description of the package
+# Keysmith Vue
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/modla/keysmith-vue.svg?style=flat-square)](https://packagist.org/packages/modla/keysmith-vue)
 [![Total Downloads](https://img.shields.io/packagist/dt/modla/keysmith-vue.svg?style=flat-square)](https://packagist.org/packages/modla/keysmith-vue)
 ![GitHub Actions](https://github.com/modla/keysmith-vue/actions/workflows/main.yml/badge.svg)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+Keysmith Vue is a Laravel package that provides Vue.js components for managing API keys and tokens in your application. It offers a clean, user-friendly interface for creating, viewing, and revoking API keys with customizable permissions.
 
 ## Installation
 
@@ -14,10 +14,86 @@ You can install the package via composer:
 composer require modla/keysmith-vue
 ```
 
+After installation, publish the package assets and configuration:
+
+```bash
+php artisan vendor:publish --provider="Modla\KeysmithVue\KeysmithVueServiceProvider"
+```
+
 ## Usage
 
+### Basic Setup
+
+1. Include the Keysmith Vue components in your Vue application:
+
+```javascript
+import KeysmithManager from "keysmith-vue";
+
+export default {
+  components: {
+    KeysmithManager,
+  },
+};
+```
+
+2. Add the component to your template:
+
+```html
+<keysmith-manager :endpoint="/api/keys" :user-id="1" />
+```
+
+### Available Props
+
+- `endpoint`: The API endpoint for key management (required)
+- `user-id`: The ID of the user managing the keys (required)
+- `permissions`: Array of available permissions (optional)
+- `theme`: Custom theme settings (optional)
+
+### Events
+
+The component emits several events you can listen to:
+
+```html
+<keysmith-manager
+  @key-created="handleNewKey"
+  @key-revoked="handleRevocation"
+  @error="handleError"
+/>
+```
+
+### Customizing the UI
+
+You can customize the appearance by passing a theme object:
+
+```html
+<keysmith-manager
+  :theme="{
+        primary: '#4A90E2',
+        secondary: '#F5F5F5',
+        danger: '#E53E3E'
+    }"
+/>
+```
+
+### Backend Integration
+
+The package automatically sets up the necessary routes and controllers. Make sure your API authentication middleware is configured correctly in your Laravel application.
+
+## Configuration
+
+You can modify the package behavior by updating the published configuration file:
+
 ```php
-// Usage description here
+// config/keysmith.php
+return [
+    'token_expiration' => 7200,
+    'max_tokens' => 10,
+    'permissions' => [
+        'read',
+        'write',
+        'delete'
+    ]
+];
 ```
 
 ### Testing
@@ -40,8 +116,8 @@ If you discover any security related issues, please email mike.deeming@blaspsoft
 
 ## Credits
 
--   [Michael Deeming](https://github.com/modla)
--   [All Contributors](../../contributors)
+- [Michael Deeming](https://github.com/modla)
+- [All Contributors](../../contributors)
 
 ## License
 

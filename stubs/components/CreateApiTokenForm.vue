@@ -19,13 +19,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { type SharedData } from "@/types";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { Copy } from "lucide-vue-next";
 import { ref } from "vue";
 
 const props = defineProps<{
-  availablePermissions: [];
-  defaultPermissions: [];
+  availablePermissions: string[];
+  defaultPermissions: string[];
 }>();
 
 const form = useForm({
@@ -33,7 +34,7 @@ const form = useForm({
   permissions: props.defaultPermissions,
 });
 
-const page = usePage();
+const page = usePage<SharedData>();
 
 const isTokenDialogOpen = ref(false);
 
@@ -60,7 +61,7 @@ const closeModal = () => {
 const copyToken = () => {
   recentlyCopied.value = true;
 
-  navigator.clipboard.writeText(page.props.flash.keysmith.token);
+  navigator.clipboard.writeText(page.props.flash.api_token as string);
 
   setTimeout(() => {
     recentlyCopied.value = false;
@@ -80,7 +81,7 @@ const copyToken = () => {
       >
       <form
         @submit.prevent="createApiToken"
-        class="mt-6 space-y-6 w-full md:w-1/2"
+        class="mt-6 space-y-6 w-full lg:w-1/2"
       >
         <div>
           <Label for="name" value="Name" />
@@ -149,10 +150,10 @@ const copyToken = () => {
       </DialogHeader>
 
       <div
-        v-if="$page.props.flash.keysmith.token"
+        v-if="$page.props.flash.api_token"
         class="flex justify-between items-center px-4 py-2 mt-4 font-mono text-sm text-gray-500 break-all bg-gray-100 rounded border border-gray-200 dark:border-gray-400 dark:bg-background dark:text-gray-400"
       >
-        {{ $page.props.flash.keysmith.token }}
+        {{ $page.props.flash.api_token }}
         <button
           @click="copyToken"
           type="button"
@@ -167,12 +168,12 @@ const copyToken = () => {
         leave-active-class="transition ease-in-out"
         leave-to-class="opacity-0"
       >
-        <Alert
+        <p
           v-if="recentlyCopied"
           class="flex justify-end mt-2 mr-2 text-xs text-gray-600 dark:text-gray-400"
         >
           Copied to clipboard!
-        </Alert>
+        </p>
       </Transition>
 
       <DialogFooter>
