@@ -27,35 +27,6 @@ Keysmith Vue is a Laravel 12 Vue Starterkit package that provides Vue.js compone
 - Vue 3.x
 - Laravel Sanctum
 
-## Laravel Sanctum
-
-This package requires Laravel Sanctum for API token authentication. Before using Keysmith Vue, make sure to:
-
-1. Install Laravel Sanctum:
-
-```bash
-composer require laravel/sanctum
-```
-
-2. Publish and run Sanctum's migrations:
-
-```bash
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" --tag="sanctum-migrations"
-php artisan migrate
-```
-
-3. Add the HasApiTokens trait to your User model:
-
-```php
-use Laravel\Sanctum\HasApiTokens;
-
-class User extends Authenticatable
-{
-    use HasApiTokens;
-    // ... existing code ...
-}
-```
-
 ## Installation
 
 You can install the package via composer:
@@ -124,6 +95,35 @@ php artisan vendor:publish --tag=keysmith-vue-config --force
 ```
 
 This command will publish a configuration file at `config/keysmith.php`, where you can customize keysmith settings.
+
+## Dependencies
+
+This package requires Laravel Sanctum for API token authentication. Before using Keysmith Vue, make sure to:
+
+1. Install Laravel Sanctum:
+
+```bash
+composer require laravel/sanctum
+```
+
+2. Publish and run Sanctum's migrations:
+
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" --tag="sanctum-migrations"
+php artisan migrate
+```
+
+3. Add the HasApiTokens trait to your User model:
+
+```php
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens;
+    // ... existing code ...
+}
+```
 
 ## Components
 
