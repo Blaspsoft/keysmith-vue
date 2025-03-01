@@ -1,11 +1,11 @@
 {
-  "name": "modla/keysmith-vue",
-  "description": "A Vue & Inertia-powered API key management system for Laravel, with secure token generation, revocation, and authentication. ",
+  "name": "blaspsoft/keysmith-vue",
+  "description": "A Vue & Inertia-powered API key management system for Laravel 12 Vue Starterkit, with secure token generation, revocation, and authentication. ",
   "keywords": [
-    "modla",
+    "blaspsoft",
     "keysmith-vue"
   ],
-  "homepage": "https://github.com/modla/keysmith-vue",
+  "homepage": "https://github.com/blaspsoft/keysmith-vue",
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -27,12 +27,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Modla\\KeysmithVue\\": "src"
+      "Blaspsoft\\KeysmithVue\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Modla\\KeysmithVue\\Tests\\": "tests"
+      "Blaspsoft\\KeysmithVue\\Tests\\": "tests"
     }
   },
   "scripts": {
@@ -45,10 +45,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Modla\\KeysmithVue\\KeysmithVueServiceProvider"
+        "Blaspsoft\\KeysmithVue\\KeysmithVueServiceProvider"
       ],
       "aliases": {
-        "KeysmithVue": "Modla\\KeysmithVue\\KeysmithVueFacade"
+        "KeysmithVue": "Blaspsoft\\KeysmithVue\\KeysmithVueFacade"
       }
     }
   }

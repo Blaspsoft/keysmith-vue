@@ -79,10 +79,7 @@ const copyToken = () => {
         >API tokens allow third-party services to authenticate with our
         application on your behalf.</CardDescription
       >
-      <form
-        @submit.prevent="createApiToken"
-        class="mt-6 space-y-6 w-full lg:w-1/2"
-      >
+      <form @submit.prevent="createApiToken" class="mt-6 space-y-6">
         <div>
           <Label for="name" value="Name" />
           <Input

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modla\KeysmithVue\Console;
+namespace Blaspsoft\KeysmithVue\Console;
 
 use Illuminate\Filesystem\Filesystem;
 
@@ -26,7 +26,7 @@ trait InstallPageView
         (new Filesystem)->copyDirectory(__DIR__.'/../../stubs/components', resource_path('js/components'));
 
         // Tests
-        //(new Filesystem)->ensureDirectoryExists(base_path('tests/Feature'));
-        //(new Filesystem)->copy(__DIR__.'/../../stubs/inertia-vue/tests/Feature/TokenTest.php', base_path('tests/Feature/TokenTest.php'));
+        (new Filesystem)->ensureDirectoryExists(base_path('tests/Feature/ApiToken'));
+        (new Filesystem)->copy(__DIR__.'/../../stubs/tests/Feature/ApiToken/PageTokenTest.php', base_path('tests/Feature/ApiToken/PageTokenTest.php'));
     }
 }

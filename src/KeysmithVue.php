@@ -1,6 +1,6 @@
 <?php
 
-namespace Modla\KeysmithVue;
+namespace Blaspsoft\KeysmithVue;
 
 class KeysmithVue
 {

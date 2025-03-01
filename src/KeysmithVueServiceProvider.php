@@ -1,11 +1,12 @@
 <?php
 
-namespace Modla\KeysmithVue;
+namespace Blaspsoft\KeysmithVue;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
-use Modla\KeysmithVue\Contracts\TokenController;
+use Blaspsoft\KeysmithVue\Contracts\TokenController;
+
 class KeysmithVueServiceProvider extends ServiceProvider
 {
     /**

@@ -36,7 +36,7 @@ class TokenController extends Controller
 
         $request->session()->flash('api_token', $token->plainTextToken);
 
-        return redirect()->route('api-tokens.index');
+        return redirect()->back();
     }
 
     /**
@@ -55,7 +55,7 @@ class TokenController extends Controller
             'abilities' => $request->permissions,
         ])->save();
 
-        return redirect()->route('api-tokens.index');
+        return redirect()->back();
     }
 
     /**
@@ -70,6 +70,6 @@ class TokenController extends Controller
     {
         $request->user()->tokens()->where('id', $tokenId)->delete();
 
-        return redirect()->route('api-tokens.index');
+        return redirect()->back();
     }
 }

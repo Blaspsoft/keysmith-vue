@@ -1,114 +1,201 @@
-# Keysmith Vue
+<p align="center">
+    <img src="./assets/icon.png" alt="Blasp Icon" width="150" height="150"/>
+    <p align="center">
+        <a href="https://github.com/Blaspsoft/blasp/actions/workflows/main.yml"><img alt="GitHub Workflow Status (main)" src="https://github.com/Blaspsoft/blasp/actions/workflows/main.yml/badge.svg"></a>
+        <a href="https://packagist.org/packages/blaspsoft/blasp"><img alt="Total Downloads" src="https://img.shields.io/packagist/dt/blaspsoft/blasp"></a>
+        <a href="https://packagist.org/packages/blaspsoft/blasp"><img alt="Latest Version" src="https://img.shields.io/packagist/v/blaspsoft/blasp"></a>
+        <a href="https://packagist.org/packages/blaspsoft/blasp"><img alt="License" src="https://img.shields.io/packagist/l/blaspsoft/blasp"></a>
+    </p>
+</p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/modla/keysmith-vue.svg?style=flat-square)](https://packagist.org/packages/modla/keysmith-vue)
-[![Total Downloads](https://img.shields.io/packagist/dt/modla/keysmith-vue.svg?style=flat-square)](https://packagist.org/packages/modla/keysmith-vue)
-![GitHub Actions](https://github.com/modla/keysmith-vue/actions/workflows/main.yml/badge.svg)
+# Keysmith Vue - Laravel 12 Vue Starterkit API Token Management
 
-Keysmith Vue is a Laravel package that provides Vue.js components for managing API keys and tokens in your application. It offers a clean, user-friendly interface for creating, viewing, and revoking API keys with customizable permissions.
+Keysmith Vue is a Laravel 12 Vue Starterkit package that provides Vue.js components for managing API keys and tokens in your application. It offers a clean, user-friendly interface for creating, viewing, and revoking API keys with customizable permissions based on the implementation from Laravel Breeze.
+
+## Features
+
+- 🔑 Easy API token generation and management
+- 🔒 Built on Laravel Sanctum's secure token authentication
+- 🎨 Pre-built Vue components for quick integration
+- 📱 Responsive and user-friendly interface
+- ⚙️ Flexible installation options (page or settings templates)
+- 🛠️ Customizable permissions system
+
+## Requirements
+
+- PHP 8.2 or higher
+- Laravel 12.x
+- Vue 3.x
+- Laravel Sanctum
+
+## Laravel Sanctum
+
+This package requires Laravel Sanctum for API token authentication. Before using Keysmith Vue, make sure to:
+
+1. Install Laravel Sanctum:
+
+```bash
+composer require laravel/sanctum
+```
+
+2. Publish and run Sanctum's migrations:
+
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider" --tag="sanctum-migrations"
+php artisan migrate
+```
+
+3. Add the HasApiTokens trait to your User model:
+
+```php
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens;
+    // ... existing code ...
+}
+```
 
 ## Installation
 
 You can install the package via composer:
 
 ```bash
-composer require modla/keysmith-vue
+composer require blaspsoft/keysmith-vue
 ```
 
-After installation, publish the package assets and configuration:
+Choose your preferred installation template:
+
+### Page Template
+
+Install this option to add a dedicated API tokens page at `pages/api-tokens/index.vue`. This provides a standalone interface for managing your API tokens.
+
+### Settings Template
+
+Choose this option to integrate API token management within your Laravel Vue Starterkit settings at `pages/settings/APITokens.vue`. This keeps token management alongside your other application settings.
+
+Run one (or both) of the following commands based on your choice:
 
 ```bash
-php artisan vendor:publish --provider="Modla\KeysmithVue\KeysmithVueServiceProvider"
+php artisan keysmith:install page
 ```
 
-## Usage
+or
 
-### Basic Setup
-
-1. Include the Keysmith Vue components in your Vue application:
-
-```javascript
-import KeysmithManager from "keysmith-vue";
-
-export default {
-  components: {
-    KeysmithManager,
-  },
-};
+```bash
+php artisan keysmith:install settings
 ```
 
-2. Add the component to your template:
+### Configure Inertia Middleware
 
-```html
-<keysmith-manager :endpoint="/api/keys" :user-id="1" />
-```
-
-### Available Props
-
-- `endpoint`: The API endpoint for key management (required)
-- `user-id`: The ID of the user managing the keys (required)
-- `permissions`: Array of available permissions (optional)
-- `theme`: Custom theme settings (optional)
-
-### Events
-
-The component emits several events you can listen to:
-
-```html
-<keysmith-manager
-  @key-created="handleNewKey"
-  @key-revoked="handleRevocation"
-  @error="handleError"
-/>
-```
-
-### Customizing the UI
-
-You can customize the appearance by passing a theme object:
-
-```html
-<keysmith-manager
-  :theme="{
-        primary: '#4A90E2',
-        secondary: '#F5F5F5',
-        danger: '#E53E3E'
-    }"
-/>
-```
-
-### Backend Integration
-
-The package automatically sets up the necessary routes and controllers. Make sure your API authentication middleware is configured correctly in your Laravel application.
-
-## Configuration
-
-You can modify the package behavior by updating the published configuration file:
+Add the following to your `HandleInertiaRequests.php` middleware's `share` method to handle API token flash messages:
 
 ```php
-// config/keysmith.php
-return [
-    'token_expiration' => 7200,
-    'max_tokens' => 10,
-    'permissions' => [
-        'read',
-        'write',
-        'delete'
-    ]
-];
+'flash' => [
+    'api_token' => fn () => session()->get('api_token'),
+],
 ```
 
-### Testing
+```php
+public function share(Request $request): array
+    {
+        [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
+
+        return [
+            ...parent::share($request),
+            'name' => config('app.name'),
+            'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'auth' => [
+                'user' => $request->user(),
+            ],
+            'flash' => [
+                'api_token' => fn () => session()->get('api_token'),
+            ],
+        ];
+    }
+```
+
+This configuration is required to display newly created API tokens to users.
+
+### Publish config [optional]
 
 ```bash
-composer test
+php artisan vendor:publish --tag=keysmith-vue-config --force
 ```
 
-### Changelog
+This command will publish a configuration file at `config/keysmith.php`, where you can customize keysmith settings.
 
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+## Components
 
-## Contributing
+Keysmith Vue provides two components that are installed in your `/components` directory:
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+- `CreateApiTokenForm.vue`: Form component for generating new API tokens
+- `ManageApiTokens.vue`: Component for viewing and managing existing tokens
+
+These components are utilized in both the page and settings templates.
+
+## Routes
+
+Keysmith Vue provides two sets of routes depending on your installation choice:
+
+### Page Template Routes
+
+If you installed using the page template (`keysmith:install page`), these routes are available:
+
+```php
+Route::get('/api-tokens', [TokenController::class, 'index'])->name('api-tokens.index');
+Route::post('/api-tokens', [TokenController::class, 'store'])->name('api-tokens.store');
+Route::put('/api-tokens/{token}', [TokenController::class, 'update'])->name('api-tokens.update');
+Route::delete('/api-tokens/{token}', [TokenController::class, 'destroy'])->name('api-tokens.destroy');
+```
+
+### Settings Template Routes
+
+If you installed using the settings template (`keysmith:install settings`), these routes are available:
+
+```php
+Route::get('/settings/api-tokens', [TokenController::class, 'index'])->name('settings.api-tokens.index');
+Route::post('/settings/api-tokens', [TokenController::class, 'store'])->name('settings.api-tokens.store');
+Route::put('/settings/api-tokens/{token}', [TokenController::class, 'update'])->name('settings.api-tokens.update');
+Route::delete('/settings/api-tokens/{token}', [TokenController::class, 'destroy'])->name('settings.api-tokens.destroy');
+```
+
+All routes are protected by authentication middleware and handle the following operations:
+
+- `GET`: Retrieve all tokens for the authenticated user
+- `POST`: Create a new API token
+- `PUT`: Update token permissions
+- `DELETE`: Revoke an existing token
+
+## Testing
+
+Keysmith Vue includes test files that are placed in your project's `tests/Feature/ApiToken` directory:
+
+- `PageTokenTest.php`: Tests for the page template implementation
+- `SettingsTokenTest.php`: Tests for the settings template implementation
+
+You can run the tests using:
+
+```bash
+php artisan test
+```
+
+### Customizing Permissions
+
+You can customize the available token permissions by modifying the `config/keysmith.php` file:
+
+```php
+return [
+    'permissions' => [
+        'read',
+        'create',
+        'update',
+        'delete',
+        // Add your custom permissions here
+    ],
+];
+```
 
 ### Security
 
@@ -122,7 +209,3 @@ If you discover any security related issues, please email mike.deeming@blaspsoft
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Laravel Package Boilerplate
-
-This package was generated using the [Laravel Package Boilerplate](https://laravelpackageboilerplate.com).

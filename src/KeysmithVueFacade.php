@@ -1,11 +1,11 @@
 <?php
 
-namespace Modla\KeysmithVue;
+namespace Blaspsoft\KeysmithVue;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Modla\KeysmithVue\Skeleton\SkeletonClass
+ * @see \Blaspsoft\KeysmithVue\Skeleton\SkeletonClass
  */
 class KeysmithVueFacade extends Facade
 {

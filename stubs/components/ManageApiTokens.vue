@@ -91,7 +91,7 @@ const deleteApiToken = () => {
 </script>
 
 <template>
-  <Card class="w-full">
+  <Card v-if="tokens.length > 0" class="w-full">
     <CardHeader>
       <CardTitle>Manage API Tokens</CardTitle>
     </CardHeader>
@@ -100,7 +100,7 @@ const deleteApiToken = () => {
         >You may delete any of your existing tokens if they are no longer
         needed.</CardDescription
       >
-      <div class="mt-6 space-y-6 w-full lg:w-1/2">
+      <div class="mt-6 space-y-6">
         <div
           v-for="token in tokens"
           :key="token.id"
@@ -109,15 +109,16 @@ const deleteApiToken = () => {
           <div class="break-all">
             {{ token.name }}
           </div>
-          <div class="text-sm text-gray-400">
-            Last used |
-            {{
-              token.last_used_at
-                ? new Date(token.last_used_at).toLocaleString()
-                : "Never"
-            }}
-          </div>
+
           <div class="flex gap-4 items-center ms-2">
+            <div class="text-sm text-gray-400">
+              Last used |
+              {{
+                token.last_used_at
+                  ? new Date(token.last_used_at).toLocaleString()
+                  : "Never"
+              }}
+            </div>
             <Button
               v-if="availablePermissions.length > 0"
               @click="editApiToken(token)"

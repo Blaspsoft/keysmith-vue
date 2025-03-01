@@ -1,6 +1,6 @@
 <?php
 
-namespace Modla\KeysmithVue\Console;
+namespace Blaspsoft\KeysmithVue\Console;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
