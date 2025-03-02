@@ -34,15 +34,17 @@ defineProps<{
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="px-4 py-6 space-y-6">
       <Heading title="API Tokens" description="Manage your API tokens" />
-      <CreateApiTokenForm
-        :available-permissions="availablePermissions"
-        :default-permissions="defaultPermissions"
-      />
-      <ManageApiTokens
-        :tokens="tokens"
-        :available-permissions="availablePermissions"
-        :default-permissions="defaultPermissions"
-      />
+      <div class="flex flex-col gap-6 w-full md:w-3/4">
+        <CreateApiTokenForm
+          :available-permissions="availablePermissions"
+          :default-permissions="defaultPermissions"
+        />
+        <ManageApiTokens
+          :tokens="tokens"
+          :available-permissions="availablePermissions"
+          :default-permissions="defaultPermissions"
+        />
+      </div>
     </div>
   </AppLayout>
 </template>
