@@ -243,13 +243,13 @@ return [
 ### Screenshots
 
 <div align="center">
-    <img alt="keysmith" src="./assets/screenshots/snippet-1.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-2.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-3.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-4.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-5.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-6.png" />
-    <img alt="keysmith" src="./assets/screenshots/snippet-7.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_1.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_2.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_3.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_4.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_5.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_6.png" />
+    <img alt="keysmith" src="./assets/screenshots/keysmith_7.png" />
 </div>
 
 ### Security
