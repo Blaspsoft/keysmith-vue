@@ -88,6 +88,50 @@ public function share(Request $request): array
 
 This configuration is required to display newly created API tokens to users.
 
+### Add navlinks to starterkit templates
+
+Dependent of which template you decide to use 'page" or "settings" (or both). You may want to add links to the app sidebar and settings navigations.
+
+For the page update `js/components/AppSidebar.vue`
+
+```javascript
+const mainNavItems: NavItem[] = [
+  {
+    title: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutGrid,
+  },
+  {
+    title: "API Tokens",
+    href: "/api-tokens",
+    icon: KeyRound,
+  },
+];
+```
+
+For the settings update `js/layouts/settings/Layout.vue`
+
+```javascript
+const sidebarNavItems: NavItem[] = [
+  {
+    title: "Profile",
+    href: "/settings/profile",
+  },
+  {
+    title: "Password",
+    href: "/settings/password",
+  },
+  {
+    title: "Appearance",
+    href: "/settings/appearance",
+  },
+  {
+    title: "API Tokens",
+    href: "/settings/api-tokens",
+  },
+];
+```
+
 ### Publish config [optional]
 
 ```bash
@@ -195,6 +239,18 @@ return [
     ],
 ];
 ```
+
+### Screenshots
+
+<div align="center">
+    <img alt="keysmith" src="./assets/screenshots/snippet-1.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-2.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-3.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-4.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-5.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-6.png" />
+    <img alt="keysmith" src="./assets/screenshots/snippet-7.png" />
+</div>
 
 ### Security
 
